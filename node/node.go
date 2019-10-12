@@ -24,6 +24,7 @@ type Node struct {
 	*cronsun.Client
 	*cronsun.Node
 	*cron.Cron
+	*cronsun.Etc
 
 	jobs   Jobs // 和结点相关的任务
 	groups Groups
@@ -36,6 +37,7 @@ type Node struct {
 	ttl  int64
 	lID  client.LeaseID // lease id
 	done chan struct{}
+	vid int64  
 }
 
 func NewNode(cfg *conf.Conf) (n *Node, err error) {
@@ -55,6 +57,7 @@ func NewNode(cfg *conf.Conf) (n *Node, err error) {
 		err = nil
 	}
 
+
 	n = &Node{
 		Client: cronsun.DefalutClient,
 		Node: &cronsun.Node{
@@ -65,6 +68,7 @@ func NewNode(cfg *conf.Conf) (n *Node, err error) {
 			Hostname: hostname,
 		},
 		Cron: cron.New(),
+		Etc: cronsun.CreateNewEtc{}
 
 		jobs: make(Jobs, 8),
 		cmds: make(map[string]*cronsun.Cmd),
@@ -193,6 +197,49 @@ func (n *Node) loadJobs() (err error) {
 	}
 
 	return
+}
+//加载etcd的vid，并且从mongdb获取etc信息
+func (n *Node) loadEtc() (err error) {
+	businessTypeList := cronsun.GetBusinessTypeFromMongo()
+	for _, businessType := range businessTypeList {
+		if n.EtcInfo, err = n.Client.Get(businessType); err != nil {
+			return
+		}
+		n.EtcInfo.WriteEtcInfo(n.EtcInfo);
+	}
+	return
+}
+
+func (n *Node) watchEtc() {
+	rch := cronsun.WatchEtc()
+	for wresp := range rch {
+		for _, ev := range wresp.Events {
+			switch {
+			case ev.IsCreate():
+				job, err := cronsun.GetJobFromKv(ev.Kv.Key, ev.Kv.Value)
+				if err != nil {
+					log.Warnf("err: %s, kv: %s", err.Error(), ev.Kv.String())
+					continue
+				}
+
+				job.Init(n.ID, n.Hostname, n.IP)
+				n.addJob(job, true)
+			case ev.IsModify():
+				job, err := cronsun.GetJobFromKv(ev.Kv.Key, ev.Kv.Value)
+				if err != nil {
+					log.Warnf("err: %s, kv: %s", err.Error(), ev.Kv.String())
+					continue
+				}
+
+				job.Init(n.ID, n.Hostname, n.IP)
+				n.modJob(job)
+			case ev.Type == client.EventTypeDelete:
+				n.delJob(cronsun.GetIDFromKey(string(ev.Kv.Key)))
+			default:
+				log.Warnf("unknown event type[%v] from job[%s]", ev.Type, string(ev.Kv.Key))
+			}
+		}
+	}
 }
 
 func (n *Node) addJob(job *cronsun.Job, notice bool) {

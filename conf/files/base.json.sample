@@ -25,5 +25,9 @@
     "#comment": "PIDFile and UUIDFile just work for cronnode",
     "#PIDFile": "Given a none-empty string to write a pid file to the specialed path, or leave it empty to do nothing",
     "PIDFile": "/var/run/cronsun/cronnode.pid",
-    "UUIDFile": "/etc/cronsun/CRONSUN_UUID"
+    "UUIDFile": "/etc/cronsun/CRONSUN_UUID"    
+    "#File": "灰度系统配置文件，/cronsun/ab/业务[task|bussiness|cms]/key ,value 为操作的etcinfo",
+    "File": "/cronsun/ab/",
 }
+//etc client dir struct is /cronsun/ab/业务/current_version.id :{"vid":"111111"}
+//etc client dir struct is /cronsun/ab/业务/etcinfo_[vid].json : {"vid":"1111","status":"0","content":"asdkjhfjkasdf"}
