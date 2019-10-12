@@ -24,7 +24,7 @@ type Node struct {
 	*cronsun.Client
 	*cronsun.Node
 	*cron.Cron
-	*cronsun.Etc
+	// *cronsun.Etc
 
 	jobs   Jobs // 和结点相关的任务
 	groups Groups
@@ -78,6 +78,7 @@ func NewNode(cfg *conf.Conf) (n *Node, err error) {
 
 		ttl:  cfg.Ttl,
 		done: make(chan struct{}),
+		vid:0
 	}
 	return
 }
@@ -202,10 +203,10 @@ func (n *Node) loadJobs() (err error) {
 func (n *Node) loadEtc() (err error) {
 	businessTypeList := cronsun.GetBusinessTypeFromMongo()
 	for _, businessType := range businessTypeList {
-		if n.EtcInfo, err = n.Client.Get(businessType); err != nil {
+		if n.vid, err = n.Client.Get(businessType); err != nil {
 			return
 		}
-		n.EtcInfo.WriteEtcInfo(n.EtcInfo);
+		n.EtcInfo.WriteEtcInfo(n.vid);
 	}
 	return
 }
