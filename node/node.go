@@ -67,7 +67,6 @@ func NewNode(cfg *conf.Conf) (n *Node, err error) {
 			Hostname: hostname,
 		},
 		Cron: cron.New(),
-		Etc: cronsun.CreateNewEtc{},
 
 		jobs: make(Jobs, 8),
 		cmds: make(map[string]*cronsun.Cmd),
@@ -77,7 +76,7 @@ func NewNode(cfg *conf.Conf) (n *Node, err error) {
 
 		ttl:  cfg.Ttl,
 		done: make(chan struct{}),
-		vid:make(map[string]int64,1024)
+		vids: make(map[string]int64,512)
 	}
 	return
 }
@@ -200,9 +199,10 @@ func (n *Node) loadJobs() (err error) {
 }
 //加载etcd的vid，并且从mongdb获取etc信息
 func (n *Node) loadEtc() (err error) {
+	var vid int64
 	businessTypeList := cronsun.GetBusinessTypeFromMongo()
 	for _, businessType := range businessTypeList {
-		if n.vid, err = n.Client.Get(businessType); err != nil {
+		if vid, err = n.Client.Get(businessType); err != nil {
 			return
 		}
 		n.vids[businessType] = n.vid
