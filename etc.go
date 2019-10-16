@@ -45,6 +45,7 @@ func (e *Etc) WriteEtcInfo(vid int64, businessType int8, etcInfo *Etc) (err erro
     if cVid, err := os.Stat(etcPath); err !=nil {
         panic(err)
     }
+    fmt.Println(cVid)
     if(cVid != vid){
     	etcCvidFile , err := os.Open(cVidPath)
     	defer etcCvidFile.Close()
