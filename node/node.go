@@ -76,7 +76,7 @@ func NewNode(cfg *conf.Conf) (n *Node, err error) {
 
 		ttl:  cfg.Ttl,
 		done: make(chan struct{}),
-		vids: make(map[string]int64,512)
+		vids: make(map[string]int64,512),
 	}
 	return
 }
