@@ -31,3 +31,5 @@
 }
 //etc client dir struct is /cronsun/ab/业务/current_version.json :{"vid":"111111","status":"0"}
 //etc client dir struct is /cronsun/ab/业务/etcinfo_[vid].json : {"vid":"1111","status":"0","content":"asdkjhfjkasdf"}
+
+//db:ab_config  ,ab_config_log,ab_config_list

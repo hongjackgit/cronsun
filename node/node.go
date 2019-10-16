@@ -37,7 +37,7 @@ type Node struct {
 	ttl  int64
 	lID  client.LeaseID // lease id
 	done chan struct{}
-	vid int64  
+	vids map[string]int64  
 }
 
 func NewNode(cfg *conf.Conf) (n *Node, err error) {
@@ -78,7 +78,7 @@ func NewNode(cfg *conf.Conf) (n *Node, err error) {
 
 		ttl:  cfg.Ttl,
 		done: make(chan struct{}),
-		vid:0
+		vid:make(map[string]int64,1024)
 	}
 	return
 }
@@ -206,6 +206,7 @@ func (n *Node) loadEtc() (err error) {
 		if n.vid, err = n.Client.Get(businessType); err != nil {
 			return
 		}
+		n.vids[businessType] = n.vid
 		n.EtcInfo.WriteEtcInfo(n.vid);
 	}
 	return
@@ -622,6 +623,10 @@ func (n *Node) Run() (err error) {
 	}()
 
 	if err = n.loadJobs(); err != nil {
+		return
+	}
+
+	if err = n.loadEtc(); err != nil {
 		return
 	}
 
