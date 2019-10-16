@@ -40,10 +40,10 @@ func (e *Etc) WriteEtcInfo(vid int64, businessType int8, etcInfo *Etc) (err erro
 	cVidPath := "/cronsun/ab/type/current_version.id"
 	etcPath := "/cronsun/ab/type/version.json"
 	var cVid int64 = 0
-    if cVid, err := os.Stat(cVidPath); err !=nil {
+    if cVid, err = os.Stat(cVidPath); err !=nil {
         panic(err)
     }
-    if cVid, err := os.Stat(etcPath); err !=nil {
+    if cVid, err = os.Stat(etcPath); err !=nil {
         panic(err)
     }
     fmt.Println(cVid)
