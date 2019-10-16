@@ -24,7 +24,6 @@ type Node struct {
 	*cronsun.Client
 	*cronsun.Node
 	*cron.Cron
-	// *cronsun.Etc
 
 	jobs   Jobs // 和结点相关的任务
 	groups Groups
@@ -68,7 +67,7 @@ func NewNode(cfg *conf.Conf) (n *Node, err error) {
 			Hostname: hostname,
 		},
 		Cron: cron.New(),
-		Etc: cronsun.CreateNewEtc{}
+		Etc: cronsun.CreateNewEtc{},
 
 		jobs: make(Jobs, 8),
 		cmds: make(map[string]*cronsun.Cmd),
