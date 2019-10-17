@@ -10,6 +10,7 @@ import (
 	"strings"
 	"syscall"
 	"time"
+	"log"
 
 	client "github.com/coreos/etcd/clientv3"
 	"github.com/shunfei/cronsun"
@@ -205,9 +206,33 @@ func (n *Node) loadEtc() (err error) {
 			return
 		}
 		fmt.Println("businessType is %v",resp)
-		n.EtcInfo.WriteEtcInfo(1,1);
+		n.WriteEtcInfo(1,1);
 	}
 	return
+}
+
+//写入etcinfo到本地文件
+func (e *Etc) WriteEtcInfo(vid int64, businessType int8) (err error) {
+	cVidPath := fmt.Sprintf("/cronsun/ab/%d/current_version.id",businessType)
+	etcPath := fmt.Sprintf("/cronsun/ab/%d/version.json",businessType)
+	_ , err = os.Stat(cVidPath)
+	if( err != nil) {
+		log.Printf("%s is not exist",cVidPath)
+	}
+	_ , err = os.Stat(etcPath)
+	if( err != nil) {
+		log.Printf("%s is not exist",etcPath)
+	}
+    cVidFile,err:=os.Open(cVidPath)
+    defer cVidFile.Close()
+    str := fmt.Sprintf("%s",vid);
+    // content := []byte(str)
+    //将指定内容写入到文件中
+    _,err = cVidFile.WriteString(str)
+    if err != nil {
+        log.Println("WriteString error: ", err)
+    }
+	return 
 }
 
 func (n *Node) watchEtc() {
