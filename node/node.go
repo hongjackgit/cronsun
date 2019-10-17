@@ -214,32 +214,36 @@ func (n *Node) loadEtc() (err error) {
 	}
 	return
 }
-
+func checkFileIsExist(filename string) bool {
+   if _, err := os.Stat(filename); os.IsNotExist(err) {
+      return false
+   }
+   return true
+}
 //写入etcinfo到本地文件
 func (e *Node) WriteEtcInfo(vid int64, businessType int8) (err error) {
-	cVidPath := fmt.Sprintf("/cronsun/ab/%d/current_version.id",businessType)
-	etcPath := fmt.Sprintf("/cronsun/ab/%d/version.json",businessType)
-	_ , err = os.Stat(cVidPath)
-	if( err != nil) {
-		fmt.Printf("%s is not exist",cVidPath)
-	}
-	_ , err = os.Stat(etcPath)
-	if( err != nil) {
-		fmt.Printf("%s is not exist",etcPath)
-	}
-    cVidFile,err:=os.OpenFile(cVidPath,os.O_APPEND, 0666)
-    defer cVidFile.Close()
-    if (err != nil){
-    	fmt.Printf("open %s is error \r\n",cVidFile)
-    }
-    str := fmt.Sprintf("%s",vid);
-    // content := []byte(str)
-    //将指定内容写入到文件中
-    _,err = cVidFile.WriteString(str)
-    if err != nil {
-        fmt.Printf("WriteString error %v ", err)
-    }
-	return 
+	// cVidPath := fmt.Sprintf("/cronsun/ab/%d/current_version.id",businessType)
+	// etcPath := fmt.Sprintf("/cronsun/ab/%d/version.json",businessType)
+   var filename = fmt.Sprintf("/cronsun/ab/%d/current_version.id",businessType)
+
+   var f *os.File
+   var err1 error
+   var str = fmt.Sprintf("测试 %d",vid)
+   if checkFileIsExist(filename) { //如果文件存在
+      f, err1 = os.OpenFile(filename, os.O_APPEND, 0666) //打开文件
+      fmt.Println("文件存在")
+   } else {
+      f, err1 = os.Create(filename) //创建文件
+      fmt.Println("文件不存在")
+   }
+   defer f.Close()
+   n, err1 = f.WriteString(str) //写入文件(字符串)
+   if err1 != nil {
+      fmt.Println("写入失败")
+   }
+   fmt.Printf("写入 %d 个字节n", n)
+   f.Sync()
+   return 
 }
 
 func (n *Node) watchEtc() {
