@@ -202,14 +202,15 @@ func (n *Node) loadJobs() (err error) {
 func (n *Node) loadEtc() (err error) {
 	businessTypeList , _ := cronsun.GetBusinessTypeFromMongo()
 	for _, businessType := range businessTypeList {
-		var filename = fmt.Sprintf("/cronsun/ab/%d/current_version.id",businessType)
+		var filename = fmt.Sprintf("/cronsun/ab/%s/currentversion",businessType)
 		str := fmt.Sprintf("%s",businessType)
 		resp, err1 := n.Client.Put(filename,str);
-		if  err != nil {
+		if  err1 != nil {
 			err = err1
+			fmt.Println("businessType is \r\n",resp,err1)
 			return 
 		}
-		fmt.Println("businessType is %v",resp)
+		
 		n.WriteEtcInfo(1,1);
 	}
 	return
