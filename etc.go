@@ -19,6 +19,11 @@ type Etc struct {
 	State int8 `bson:"state" json:"state"`
 }
 
+
+func WatchEtc(){
+    
+}
+
 func CreateNewEtc() *Etc {
 	return &Etc{}
 }
@@ -82,8 +87,4 @@ func (e *Etc) RollBackEtcInfo(vid int64,businessType int8) (err error) {
 //删除配置文件
 func (e *Etc) DeleteEtcInfo(vid int64,businessType int8) (err error) {
 	return
-}
-
-func WatchEtc(){
-	
 }

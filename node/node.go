@@ -199,14 +199,14 @@ func (n *Node) loadJobs() (err error) {
 }
 //加载etcd的vid，并且从mongdb获取etc信息
 func (n *Node) loadEtc() (err error) {
-	var vid int64
-	businessTypeList := cronsun.GetBusinessTypeFromMongo()
+	var n.client.GetResponse
+	businessTypeList , _ := cronsun.GetBusinessTypeFromMongo()
 	for _, businessType := range businessTypeList {
-		if vid, err = n.Client.Get(businessType); err != nil {
+		if n.client.GetResponse, err = n.Client.Get(businessType); err != nil {
 			return
 		}
-		n.vids[businessType] = n.vid
-		n.EtcInfo.WriteEtcInfo(n.vid);
+		n.vids[businessType] = n.client.GetResponse.Index
+		n.EtcInfo.WriteEtcInfo(n.client.GetResponse.Index);
 	}
 	return
 }
