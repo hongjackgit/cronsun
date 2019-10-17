@@ -53,7 +53,7 @@ func (e *Etc) WriteEtcInfo(vid int64, businessType int8, etcInfo *Etc) (err erro
     if err !=nil {
         panic(err)
     }
-    fmt.Println(cVid)
+
 	etcCvidFile , err := os.Open(cVidPath)
 	defer etcCvidFile.Close()
 	if (err != nil) {
