@@ -2,6 +2,7 @@ package cronsun
 
 import (
 	"os"
+	"log"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -40,12 +41,25 @@ func GetEtcVidFromEetd(businessType int8) (etcInfo *Etc) {
 }
 
 //写入etcinfo到本地文件
-func (e *Etc) WriteEtcInfo(vid int64, businessType int8, etcInfo *Etc) (err error) {
-	cVidPath := "/cronsun/ab/type/current_version.id"
-	etcPath := "/cronsun/ab/type/version.json"
-	
-    fmt.Printf("path is %s, %s",cVidPath,etcPath)
-
+func (e *Etc) WriteEtcInfo(vid int64, businessType int8) (err error) {
+	cVidPath := fmt.Sprintf("/cronsun/ab/%d/current_version.id",businessType)
+	etcPath := fmt.Sprintf("/cronsun/ab/%d/version.json",businessType)
+	_ , err = os.Stat(cVidPath)
+	if( err != nil) {
+		log.Printf("%s is not exist",cVidPath)
+	}
+	_ , err = os.Stat(etcPath)
+	if( err != nil) {
+		log.Printf("%s is not exist",etcPath)
+	}
+    cVidFile,err:=os.Open(cVidPath)
+    defer cVidFile.close()
+    content := []byte(vid)
+    //将指定内容写入到文件中
+    _,err := cVidFile.WriteString(cVidPath, content, 0666)
+    if err != nil {
+        log.Println("WriteString error: ", err)
+    }
 	return 
 }
 //修改etcinfo文件
