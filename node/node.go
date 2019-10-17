@@ -202,7 +202,10 @@ func (n *Node) loadJobs() (err error) {
 func (n *Node) loadEtc() (err error) {
 	businessTypeList , _ := cronsun.GetBusinessTypeFromMongo()
 	for _, businessType := range businessTypeList {
-		if resp, err1 := n.Client.Get(businessType); err != nil {
+
+		str := fmt.Sprintf("%s",businessType)
+		resp, err1 := n.Client.Get(str);
+		if  err != nil {
 			err = err1
 			return 
 		}
