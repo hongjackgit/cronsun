@@ -232,17 +232,14 @@ func (e *Node) WriteEtcInfo(vid int64, businessType int8) (err error) {
    var str = fmt.Sprintf("测试 %d",vid)
    if checkFileIsExist(filename) { //如果文件存在
       f, err1 = os.OpenFile(filename, os.O_APPEND, 0666) //打开文件
-      fmt.Println("文件存在")
    } else {
       f, err1 = os.Create(filename) //创建文件
-      fmt.Println("文件不存在")
    }
    defer f.Close()
-   n, err1 := f.WriteString(str) //写入文件(字符串)
+   _, err1 := f.WriteString(str) //写入文件(字符串)
    if err1 != nil {
-      fmt.Println("写入失败")
+      fmt.Println("写入失败 \r \n")
    }
-   fmt.Printf("写入 %d 个字节n", n)
    f.Sync()
    return 
 }
