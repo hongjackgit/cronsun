@@ -205,7 +205,7 @@ func (n *Node) loadEtc() (err error) {
 		var filename = fmt.Sprintf("/cronsun/ab/%s/currentversion",businessType)
 		str := fmt.Sprintf("%s",businessType)
 		fmt.Printf("key : %s val: %v \r\n",filename,str)
-		resp, err1 := n.Node.Put(filename,str);
+		resp, err1 := DefalutClient.Put(filename,str);
 		if  err1 != nil {
 			err = err1
 			fmt.Println("businessType is \r\n",resp,err1)
