@@ -43,34 +43,8 @@ func GetEtcVidFromEetd(businessType int8) (etcInfo *Etc) {
 func (e *Etc) WriteEtcInfo(vid int64, businessType int8, etcInfo *Etc) (err error) {
 	cVidPath := "/cronsun/ab/type/current_version.id"
 	etcPath := "/cronsun/ab/type/version.json"
-	var f os.FileInfo
-    f, err = os.Stat(cVidPath);
-    if err !=nil {
-        panic(err)
-    }
-    f, err = os.Stat(etcPath); 
-    if err !=nil {
-        panic(err)
-    }
-
-	etcCvidFile , err := os.Open(cVidPath)
-	defer etcCvidFile.Close()
-	if (err != nil) {
-		panic(err)
-	}
-	_, err = etcCvidFile.WriteString("{cvid:1}")
-	if (err != nil){
-		panic(err)
-	}
-	etcFile , err := os.Open(etcPath)
-	defer etcFile.Close()
-	if (err != nil) {
-		panic(err)
-	}
-	_, err = etcFile.WriteString("AAAAAA")
-	if (err != nil){
-		panic(err)
-	}
+	
+    fmt.Printf("path is %s, %s",cVidPath,etcPath)
 
 	return 
 }
