@@ -10,7 +10,7 @@ import (
 	"strings"
 	"syscall"
 	"time"
-	"log"
+	// "log"
 
 	client "github.com/coreos/etcd/clientv3"
 	"github.com/shunfei/cronsun"
@@ -202,8 +202,9 @@ func (n *Node) loadJobs() (err error) {
 func (n *Node) loadEtc() (err error) {
 	businessTypeList , _ := cronsun.GetBusinessTypeFromMongo()
 	for _, businessType := range businessTypeList {
-		if resp, err := n.Client.Get(businessType); err != nil {
-			return
+		if resp, err1 := n.Client.Get(businessType); err != nil {
+			err = err1
+			return 
 		}
 		fmt.Println("businessType is %v",resp)
 		n.WriteEtcInfo(1,1);
@@ -217,11 +218,11 @@ func (e *Node) WriteEtcInfo(vid int64, businessType int8) (err error) {
 	etcPath := fmt.Sprintf("/cronsun/ab/%d/version.json",businessType)
 	_ , err = os.Stat(cVidPath)
 	if( err != nil) {
-		log.Printf("%s is not exist",cVidPath)
+		fmt.Printf("%s is not exist",cVidPath)
 	}
 	_ , err = os.Stat(etcPath)
 	if( err != nil) {
-		log.Printf("%s is not exist",etcPath)
+		fmt.Printf("%s is not exist",etcPath)
 	}
     cVidFile,err:=os.Open(cVidPath)
     defer cVidFile.Close()
@@ -230,41 +231,13 @@ func (e *Node) WriteEtcInfo(vid int64, businessType int8) (err error) {
     //将指定内容写入到文件中
     _,err = cVidFile.WriteString(str)
     if err != nil {
-        log.Println("WriteString error: ", err)
+        fmt.Println("WriteString error: ", err)
     }
 	return 
 }
 
 func (n *Node) watchEtc() {
-	rch := cronsun.WatchEtc()
-	for wresp := range rch {
-		for _, ev := range wresp.Events {
-			switch {
-			case ev.IsCreate():
-				job, err := cronsun.GetJobFromKv(ev.Kv.Key, ev.Kv.Value)
-				if err != nil {
-					log.Warnf("err: %s, kv: %s", err.Error(), ev.Kv.String())
-					continue
-				}
-
-				job.Init(n.ID, n.Hostname, n.IP)
-				n.addJob(job, true)
-			case ev.IsModify():
-				job, err := cronsun.GetJobFromKv(ev.Kv.Key, ev.Kv.Value)
-				if err != nil {
-					log.Warnf("err: %s, kv: %s", err.Error(), ev.Kv.String())
-					continue
-				}
-
-				job.Init(n.ID, n.Hostname, n.IP)
-				n.modJob(job)
-			case ev.Type == client.EventTypeDelete:
-				n.delJob(cronsun.GetIDFromKey(string(ev.Kv.Key)))
-			default:
-				log.Warnf("unknown event type[%v] from job[%s]", ev.Type, string(ev.Kv.Key))
-			}
-		}
-	}
+	
 }
 
 func (n *Node) addJob(job *cronsun.Job, notice bool) {
