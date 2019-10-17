@@ -54,11 +54,11 @@ func (e *Etc) WriteEtcInfo(vid int64, businessType int8) (err error) {
 		log.Printf("%s is not exist",etcPath)
 	}
     cVidFile,err:=os.Open(cVidPath)
-    defer cVidFile.close()
+    defer cVidFile.Close()
     str := fmt.Sprintf("%s",vid);
-    content := []byte(str)
+    // content := []byte(str)
     //将指定内容写入到文件中
-    _,err := cVidFile.WriteString(cVidPath, content, 0666)
+    _,err = cVidFile.WriteString(str)
     if err != nil {
         log.Println("WriteString error: ", err)
     }
