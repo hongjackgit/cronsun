@@ -10,8 +10,8 @@ const (
 )
 
 //从 db 获取所有businessType
-func GetBusinessTypeFromMongo() (businessType []int8, err error) {
+func GetBusinessTypeFromMongo() (businessType []string, err error) {
 	// err = mgoDB.FindOne(Coll_Business, bson.M{"status":0}, businessType)
-	businessType = []int8{1,2,3}
+	businessType = []string{"task","cms","platform"}
 	return 
 }
