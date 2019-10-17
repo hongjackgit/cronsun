@@ -236,7 +236,7 @@ func (e *Node) WriteEtcInfo(vid int64, businessType int8) (err error) {
       f, err1 = os.Create(filename) //创建文件
    }
    defer f.Close()
-   _, err1 := f.WriteString(str) //写入文件(字符串)
+   _, err1 = f.WriteString(str) //写入文件(字符串)
    if err1 != nil {
       fmt.Println("写入失败 \r \n")
    }
