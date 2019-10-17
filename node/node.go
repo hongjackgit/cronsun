@@ -227,7 +227,7 @@ func (e *Node) WriteEtcInfo(vid int64, businessType int8) (err error) {
 	if( err != nil) {
 		fmt.Printf("%s is not exist",etcPath)
 	}
-    cVidFile,err:=os.OpenFile(cVidPath)
+    cVidFile,err:=os.OpenFile(cVidPath,os.O_APPEND, 0666)
     defer cVidFile.Close()
     if (err != nil){
     	fmt.Printf("open %s is error \r\n",cVidFile)
