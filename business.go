@@ -12,6 +12,6 @@ const (
 //从 db 获取所有businessType
 func GetBusinessTypeFromMongo() (businessType []int8, err error) {
 	// err = mgoDB.FindOne(Coll_Business, bson.M{"status":0}, businessType)
-	businessType = [1,2,3]
+	businessType = []int8[1,2,3]
 	return 
 }
