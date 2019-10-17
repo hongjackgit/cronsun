@@ -54,7 +54,8 @@ func (e *Etc) WriteEtcInfo(vid int64, businessType int8) (err error) {
 	}
     cVidFile,err:=os.Open(cVidPath)
     defer cVidFile.close()
-    content := []byte(vid)
+    str := fmt.Sprintf("%s",vid);
+    content := []byte(str)
     //将指定内容写入到文件中
     _,err := cVidFile.WriteString(cVidPath, content, 0666)
     if err != nil {
