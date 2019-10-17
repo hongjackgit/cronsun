@@ -204,6 +204,7 @@ func (n *Node) loadEtc() (err error) {
 	for _, businessType := range businessTypeList {
 		var filename = fmt.Sprintf("/cronsun/ab/%s/currentversion",businessType)
 		str := fmt.Sprintf("%s",businessType)
+		fmt.Printf("key : %s val: %v \r\n",filename,str)
 		resp, err1 := n.Client.Put(filename,str);
 		if  err1 != nil {
 			err = err1
