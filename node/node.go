@@ -211,7 +211,8 @@ func (n *Node) loadEtc() (err error) {
 			fmt.Println("businessType is \r\n",resp,err1)
 			return 
 		}
-		
+		resp1, err1 := cronsun.DefalutClient.Get(filename);
+		fmt.Println("resp is %v \r\n",resp1)
 		n.WriteEtcInfo(1,1);
 	}
 	return
