@@ -212,7 +212,7 @@ func (n *Node) loadEtc() (err error) {
 }
 
 //写入etcinfo到本地文件
-func (e *Etc) WriteEtcInfo(vid int64, businessType int8) (err error) {
+func (e *Node) WriteEtcInfo(vid int64, businessType int8) (err error) {
 	cVidPath := fmt.Sprintf("/cronsun/ab/%d/current_version.id",businessType)
 	etcPath := fmt.Sprintf("/cronsun/ab/%d/version.json",businessType)
 	_ , err = os.Stat(cVidPath)
