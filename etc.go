@@ -3,6 +3,7 @@ package cronsun
 import (
 	"os"
 	"log"
+	"fmt"
 	"gopkg.in/mgo.v2/bson"
 )
 
