@@ -227,14 +227,17 @@ func (e *Node) WriteEtcInfo(vid int64, businessType int8) (err error) {
 	if( err != nil) {
 		fmt.Printf("%s is not exist",etcPath)
 	}
-    cVidFile,err:=os.Open(cVidPath)
+    cVidFile,err:=os.OpenFile(cVidPath)
     defer cVidFile.Close()
+    if (err != nil){
+    	fmt.Printf("open %s is error \r\n",cVidFile)
+    }
     str := fmt.Sprintf("%s",vid);
     // content := []byte(str)
     //将指定内容写入到文件中
     _,err = cVidFile.WriteString(str)
     if err != nil {
-        fmt.Println("WriteString error: ", err)
+        fmt.Printf("WriteString error %v ", err)
     }
 	return 
 }
