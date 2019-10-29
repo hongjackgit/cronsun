@@ -1,7 +1,7 @@
 package cronsun
 
 import (
-	"gopkg.in/mgo.v2"
+	// "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -10,7 +10,7 @@ const (
 )
 
 type Business struct {
-	Id int64
+	Id bson.ObjectId
 	Name string
 	State int8
 }
