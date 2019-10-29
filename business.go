@@ -39,6 +39,6 @@ func (business *Business) AddBusinessType(Name string) (businessType string, err
 
 //从 db 获取所有businessType
 func (business *Business) GetBusinessType(Name string) (rBusiness Business, err error) {
-	err = mgoDB.FindOne(Coll_Business,bson.M{"Name":Name}, &rBusiness);
+	err = mgoDB.FindOne(Coll_Business,bson.M{"name":Name}, &rBusiness); 
 	return 
 }
