@@ -201,6 +201,8 @@ func (n *Node) loadJobs() (err error) {
 //加载etcd的vid，并且从mongdb获取etc信息
 func (n *Node) loadEtc() (err error) {
 	businessTypeList , _ := cronsun.GetBusinessTypeFromMongo()
+	business := cronsun.CreateBusiness();
+	business.AddBusinessType("test");
 	for _, businessType := range businessTypeList {
 		var filename = fmt.Sprintf("/cronsun/ab/%s/currentversion",businessType)
 		str := fmt.Sprintf("%s",businessType)
