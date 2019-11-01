@@ -26,11 +26,6 @@ func CreateNewEtc() *Etc {
 	return &Etc{}
 }
 
-//从 db 获取version对应的配置文件
-func GetEtcInfoFromMongo(id int64,businessType int8) (etclistInfo []*Etc, err error) {
-	err = mgoDB.FindOne(Coll_Etc, bson.M{"id": id,"type":businessType}, etclistInfo)
-	return 
-}
 
 //从 etcd 获取正在version号，启动时候
 func GetEtcVidFromEetd(businessType int8) (etcInfo *Etc) {

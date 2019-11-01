@@ -204,11 +204,11 @@ func (n *Node) loadEtc() (err error) {
 	business := cronsun.CreateBusiness();
 	// business.AddBusinessType("test");
 
-	rBussiness , err3 := business.GetBusinessType("test");
-	if(err3 != nil){
-		fmt.Printf("mongodb is error %s",err3);
+	abResp, aberr1 := cronsun.DefalutClient.Get("/cronsun/ab/",client.WithPrefix());
+	if(aberr1 != nil){
+		fmt.Printf("etcd is error %s",aberr1);
 	}
-	fmt.Printf("mongodb is %v",rBussiness);
+	fmt.Printf("etcd abResp is %v",abResp);
 	for _, businessType := range businessTypeList {
 		var filename = fmt.Sprintf("/cronsun/ab/%s/currentversion",businessType)
 		str := fmt.Sprintf("%s",businessType)
