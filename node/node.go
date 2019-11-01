@@ -209,19 +209,9 @@ func (n *Node) loadEtc() (err error) {
 		fmt.Printf("etcd is error %s",aberr1);
 	}
 	fmt.Printf("etcd abResp is %v",abResp);
-	for _, businessType := range businessTypeList {
-		var filename = fmt.Sprintf("/cronsun/ab/%s/currentversion",businessType)
-		str := fmt.Sprintf("%s",businessType)
-		fmt.Printf("key : %s val: %v \r\n",filename,str)
-		resp, err1 := cronsun.DefalutClient.Put(filename,str);
-		if  err1 != nil {
-			err = err1
-			fmt.Println("businessType is \r\n",resp,err1)
-			return 
-		}
-		resp1, err1 := cronsun.DefalutClient.Get(filename);
-		fmt.Println("resp is %v \r\n",resp1)
-		n.WriteEtcInfo(1,1);
+	for i := range abResp.Kvs {
+		fmt.Printf("key : %s val: %v \r\n",string(abResp.Kvs[i].Key),string(abResp.Kvs[i].Value))
+		n.WriteEtcInfo(string(abResp.Kvs[i].Key),string(abResp.Kvs[i].Value));
 	}
 	return
 }
@@ -232,16 +222,14 @@ func checkFileIsExist(filename string) bool {
    return true
 }
 //写入etcinfo到本地文件
-func (e *Node) WriteEtcInfo(vid int64, businessType int8) (err error) {
-	// cVidPath := fmt.Sprintf("/cronsun/ab/%d/current_version.id",businessType)
-	// etcPath := fmt.Sprintf("/cronsun/ab/%d/version.json",businessType)
-   var filename = fmt.Sprintf("/cronsun/ab/%d/current_version.id",businessType)
+func (e *Node) WriteEtcInfo(vid string, businessType string) (err error) {
+   var filename = fmt.Sprintf("/cronsun/ab/%d/current_version.id",vid)
 
    var f *os.File
    var err1 error
    var str = fmt.Sprintf("测试 %d",vid)
    if checkFileIsExist(filename) { //如果文件存在
-      f, err1 = os.OpenFile(filename, os.O_APPEND, 0666) //打开文件
+      f, err1 = os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0666) //打开文件
    } else {
       f, err1 = os.Create(filename) //创建文件
    }
