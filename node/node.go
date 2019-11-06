@@ -200,7 +200,7 @@ func (n *Node) loadJobs() (err error) {
 }
 //加载etcd的vid，并且从mongdb获取etc信息
 func (n *Node) loadEtc() (err error) {
-	businessTypeList , _ := cronsun.GetBusinessTypeFromMongo()
+	// businessTypeList , _ := cronsun.GetBusinessTypeFromMongo()
 	// business := cronsun.CreateBusiness();
 	// business.AddBusinessType("test");
 
@@ -222,19 +222,18 @@ func checkFileIsExist(filename string) bool {
    return true
 }
 //写入etcinfo到本地文件
-func (e *Node) WriteEtcInfo(vid string, businessType string) (err error) {
-   var filename = fmt.Sprintf("/cronsun/ab/%d/current_version.id",vid)
+func (e *Node) WriteEtcInfo(vid string, filecontent string) (err error) {
+   var filename = fmt.Sprintf("/cronsun/ab/etc/%s.json",vid)
 
    var f *os.File
    var err1 error
-   var str = fmt.Sprintf("测试 %d",vid)
    if checkFileIsExist(filename) { //如果文件存在
       f, err1 = os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0666) //打开文件
    } else {
       f, err1 = os.Create(filename) //创建文件
    }
    defer f.Close()
-   _, err1 = f.WriteString(str) //写入文件(字符串)
+   _, err1 = f.WriteString(filecontent) //写入文件(字符串)
    if err1 != nil {
       fmt.Println("写入失败 \r \n")
    }
