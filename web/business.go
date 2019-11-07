@@ -15,6 +15,13 @@ type Business struct {
 	State int8
 }
 
+type Key struct {
+	Id bson.ObjectId
+	Bid bson.ObjectId
+	Content string
+	State int8
+}
+
 
 
 //从 db 获取所有business
@@ -32,23 +39,24 @@ func GetAllBusiness(name string) (business []string, err error) {
 
 //删除业务TSK
 func (business *Business) delBusiness(name string) error {
+
 	return
+}
+
+func CreateKey(business *Business) *Key{
+	return &Key{"Bid":business.Id,"State":0}
 }
 
 //配置KEY，及内容
-func (business *Business) addKey(key string, content string) error {
-	return
+func (key *Key) addKey(key string, content string, business *Business) error {
+	key.Id = bson.NewObjectId()
+	key.Bid = business.Id
+	key.Content = content
+	key.State = 1
+	err := mgoDB.Insert(Coll_Business,key);
+	return err 
 }
 
-//上线操作
-func (business *Business) StartKey(key string, content string) error {
-	return
-}
-
-//回滚操作
-func (business *Business) RollbackKey(key string, content string) error {
-	return
-}
 
 //从 db 获取所有businessType
 func (business *Business) AddBusiness(Name string) (businessType string, err error) {
@@ -60,8 +68,16 @@ func (business *Business) AddBusiness(Name string) (businessType string, err err
 	return 
 }
 
-//从 db 获取所有businessType
-func (business *Business) GetBusiness(Name string) (rBusiness Business, err error) {
-	err = mgoDB.FindOne(Coll_Business,bson.M{"name":Name}, &rBusiness); 
-	return 
+//上线操作
+func (business *Business) StartKey(key string, content string) error {
+	if err := mgoDB.Upsert(Coll_Business, bson.M{"node": jl.Node, "hostname": jl.Hostname, "ip": jl.IP, "jobId": jl.JobId, "jobGroup": jl.JobGroup}, latestLog); err != nil {
+		log.Errorf(err.Error())
+	}
+	return
 }
+
+//回滚操作
+func (business *Business) RollbackKey(key string, content string) error {
+	return
+}
+
