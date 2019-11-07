@@ -22,6 +22,7 @@ func initRouters() (s *http.Server, err error) {
 	configHandler := &Configuration{}
 	authHandler := &Authentication{}
 	adminHandler := &Administrator{}
+	businessHandler := &Business{}
 
 	r := mux.NewRouter()
 	subrouter := r.PathPrefix("/v1").Subrouter()
@@ -109,6 +110,9 @@ func initRouters() (s *http.Server, err error) {
 
 	h = NewAuthHandler(configHandler.Configuratios, cronsun.Reporter)
 	subrouter.Handle("/configurations", h).Methods("GET")
+
+	h = NewAuthHandler(businessHandler.Configuratios, cronsun.Reporter)
+	subrouter.Handle("/business", h).Methods("GET")
 
 	r.PathPrefix("/ui/").Handler(http.StripPrefix("/ui/", newEmbeddedFileServer("", "index.html")))
 	r.NotFoundHandler = NewBaseHandler(notFoundHandler)
